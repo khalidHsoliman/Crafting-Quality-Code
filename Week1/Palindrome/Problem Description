@@ -1,0 +1,7 @@
+Palindrom happens when a string equals itself when reversed 
+such as : racecar, noon
+therea are many algorithms to solve this problem but i will address only 3 of them here :
+
+#1 : using the definition we will reverse the string and see if it equals the original one 
+#2 : we will slice the string a half and reverse the second half then compare it with the first one if they equal it's a palindrome
+#3 : we well compare the first letter with the last and so on unitl we reach the middle of the word .. if the letters equal it's a palindrome 
