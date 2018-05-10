@@ -35,7 +35,7 @@ would produce this list:
 """
 
 # The file containing the restaurant data.
-FILENAME = 'restaurants_small.txt'
+FILENAME = 'restaurants.txt'
 
 
 def recommend(file, price, cuisines_list):
@@ -107,6 +107,97 @@ def read_restaurants(file):
     - a dict of {cusine: list of restaurant names}
     """
 
+    # read the whole file and save it in a list called restaurants"""
+    with open (file, 'r') as f:
+        restaurants = f.read()
+
+    # rearrange the list to remove '' and newlines
+    st = ''
+    restaurants = restaurants.splitlines()
+    for element in restaurants:
+        if(element == ''):
+            restaurants.remove(element)
+        if('%' in element):
+            st = element[:-1]
+            restaurants[restaurants.index(element)] = st
+            
+    #print(restaurants)
+
+    # converting the list into list of lists where every inner list is a restaurant 
+    n = 4           #number of inner list items
+    restaurants = [restaurants[n*i : n*(i+1)] for i in range(len(restaurants)//4)]
+
+    # rating
     name_to_rating = {}
-    price_to_names = {'$': [], '$$': [], '$$$': [], '$$$$': []}
+
+    # slicing the first and second element - name and rate - from restaurants info
+    for i in range (len(restaurants)):
+            name_to_rating.update({restaurants[i][0] : int(restaurants[i][1])})
+
+    #print(name_to_rating)
+
+    # pricing
+
+    # create empty lists to hold the price ranges
+    rating = ''
+    List_1 = []
+    List_2 = []
+    List_3 = []
+    List_4 = []
+
+    for i in range(len(restaurants)): 
+        rating = restaurants[i][2]
+        if (rating == '$'):
+            List_1.append(restaurants[i][0])
+        elif (rating == '$$'):
+            List_2.append(restaurants[i][0])
+        elif (rating == '$$$'):
+            List_3.append(restaurants[i][0])
+        elif (rating == '$$$$'):
+            List_4.append(restaurants[i][0])
+
+    price_to_names = {'$': List_1, '$$': List_2, '$$$': List_3, '$$$$': List_4}
+
+    #print(price_to_names)
+
+    # cuisine
+
+    # spliting the cuisines if the restaurant has more than one and add them to a list of strings
+    c = []
+    
+    for i in range(len(restaurants)):
+        if(',' in restaurants[i][3]):
+            restaurants[i][3] = restaurants[i][3].split(',')
+        c.append(restaurants[i][3])
+
+    # add those lists of strings to the other cuisines in one large list
+    cu = []
+    
+    for element in c:
+        if type(element) is list:
+            cu += element
+        else:
+            cu.append(element)
+
+    # remove the similar cuisines
+    cuisines = []
+    for element in cu:
+        if element not in cuisines: 
+            cuisines.append(element)
+
+    # create the cuisine to names dictionary
     cuisine_to_names = {}
+
+    for element in cuisines:
+        Lst = []
+        for restaurant in restaurants:
+            if element in restaurant[3]:
+                Lst.append(restaurant[0])    
+
+        cuisine_to_names[element] = Lst
+        
+    #print(cuisine_to_names)
+
+    return (name_to_rating, price_to_names, cuisine_to_names)
+
+    
