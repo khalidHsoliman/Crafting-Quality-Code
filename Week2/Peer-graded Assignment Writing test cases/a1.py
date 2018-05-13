@@ -1,3 +1,5 @@
+import math;
+
 def num_buses(n):
     """ (int) -> int
 
@@ -9,8 +11,9 @@ def num_buses(n):
     >>> num_buses(75)
     2
     """
-
-
+    return(math.ceil(n / 50))
+    
+    
 def stock_price_summary(price_changes):
     """ (list of number) -> (number, number) tuple
 
@@ -21,6 +24,19 @@ def stock_price_summary(price_changes):
     >>> stock_price_summary([0.01, 0.03, -0.02, -0.14, 0, 0, 0.10, -0.01])
     (0.14, -0.17)
     """
+
+    sum_of_gains  = 0
+    sum_of_losses = 0
+    
+    for price in price_changes:
+        if   price > 0:
+            sum_of_gains  += price
+        elif price < 0:
+            sum_of_losses += price 
+
+    s = (sum_of_gains, sum_of_losses)
+    
+    return (s)
 
 
 def swap_k(L, k):
@@ -36,7 +52,15 @@ def swap_k(L, k):
     [5, 6, 3, 4, 1, 2]
     """
 
+    temp = 0
 
-if __name__ == '__main__':
+    temp   = L[:k]
+    L[:k]  = L[-k:]
+    L[-k:] = temp
+
+    return(L)
+
+"""if __name__ == '__main__':
     import doctest
     doctest.testmod()
+"""
