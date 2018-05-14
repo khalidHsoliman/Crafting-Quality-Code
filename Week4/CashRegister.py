@@ -13,6 +13,25 @@ class CashRegister:
         self.tens = tens
         self.twenties = twenties
 
+    def __str__(self):
+        """ (CashRegister) -> str
+
+        Return a string representation of this CashRegister.
+        
+        >>> reg1 = CashRegister(1, 2, 3, 4, 5)
+        >>> reg1.__str__()
+        CashRegister: $160 ($1x1, $2x2, $5x3, $10x4, $20x5)
+        """
+
+        return 'CashRegister: ' + \
+               '${0} ($1x{1}, $2x{2}, $5x{3}, $10x{4}, $20x{5})'.format(
+                   self.get_total(), self.loonies, self.toonies,
+                   self.fives, self.tens, self.twenties)
+    
+##        return 'CashRegister: $' + str(self.get_total()) + ' ($1x' + str(self.loonies) + \
+##               ', $2x' + str(self.toonies) + ', $5x' + str(self.fives) + ', $10x' + \
+##               str(self.tens) + ', $20x' + str(self.twenties) + ')'
+
     def __eq__(self, other):
         """ (CashRegister, CashRegister) -> bool
 
@@ -80,6 +99,9 @@ if __name__ == '__main__':
     cr1 = CashRegister(2, 0, 0, 0, 0)
     cr2 = CashRegister(0, 1, 0, 0, 0)
     cr3 = CashRegister(1, 1, 0, 0, 0)
+    print(cr1)
+    print(cr2)
+    
     print(cr1 == cr2)
     print(cr3 == cr2)
     
