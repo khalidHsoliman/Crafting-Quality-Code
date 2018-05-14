@@ -54,13 +54,12 @@ def swap_k(L, k):
 
     temp = 0
 
-    temp   = L[:k]
-    L[:k]  = L[-k:]
-    L[-k:] = temp
+    if k != 0:
+        temp   = L[:k]
+        L[:k]  = L[-k:]
+        L[-k:] = temp
 
-    return(L)
-
-"""if __name__ == '__main__':
+if __name__ == '__main__':
     import doctest
     doctest.testmod()
-"""
+
