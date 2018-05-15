@@ -1,0 +1,165 @@
+
+Plugging Your Classes into Python Syntax
+You know how to use several of Python's operators. For example, we have used the + operator for:
+
+adding 2 numbers together,
+concatenating two string, and
+joining two lists.
+You've also used *, /, -, **, and other operators.
+
+We're going to show you how to use operators like + with your own types.
+
+Special Methods
+All classes are built on an existing class called object. Class object has many existing "underscore" methods, known as special or magic methods. We can see their names by calling dir on object:
+
+>>> dir(object)
+['__class__', '__delattr__', '__doc__', '__eq__', '__format__', '__ge__',
+ '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', 
+ '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', 
+ '__sizeof__', '__str__', '__subclasshook__']
+
+These special methods "plug in" to Python syntax, often with operators such as + and ==.	Here are a few examples:
+
+Method __init__ is called after an object is created, in order to initialize that object.
+Method __str__ is called to get a string representation of an object (such as by str() or print()).
+Method __eq__ is called whenever the operator == is used.
+Adding to the CashRegister Class
+We're going to add the __eq__ method to our CashRegister class so that we can compare two cash register objects using ==.
+
+We will consider two cash registers to be equal if they contain the same amount of money. Here is the main program that we'd like to run:
+
+if __name__ == '__main__':
+
+    cr1 = CashRegister(2, 0, 0, 0, 0)
+    cr2 = CashRegister(0, 1, 0, 0, 0)
+    cr3 = CashRegister(1, 1, 0, 0, 0)
+    print(cr1 == cr2)
+    print(cr3 == cr2)
+
+When we run the program, both the comparisons for equality produce False:
+
+>>>
+False
+False
+
+Since we have not supplied an __eq__ method in class CashRegister, object's __eq__ method is used. Class object's __eq__ method works by comparing memory addresses. Since cr1, cr2, and cr3 contain different memory locations, they are not equal to one another.
+
+However, since we want our CashRegister objects to be considered equal if the amount of money is the same, we need to write our own method.
+Writing __eq__
+The first parameter to our __eq__ method is self, and the second parameter refers to the CashRegister object that self will be compared with.
+
+When calling the __eq__ method, the object on the left-hand side of the equality operator corresponds with self, and the operator on the right-hand side correponds with other (for example, for expression cash1 == cash2, self will refer to cash1, and other will refer to cash2)
+
+For this method, we need to check whether the value produced by self.get_total() is equal to the value produced by other.get_total():
+
+def __eq__(self, other):
+    """ (CashRegister, CashRegister) -> bool
+	
+    Return True iff this CashRegister has the same amount of money as other.
+	
+    >>> reg1 = CashRegister(2, 0, 0, 0, 0)
+    >>> reg2 = CashRegister(0, 1, 0, 0, 0)
+    >>> reg1 == reg2
+    True
+    """	
+	
+    return self.get_total() == other.get_total()
+
+Now, when the program is executed, we get the following results:
+>>> 
+True
+False
+In General
+Whenever defining special methods that correpond with Python's operators, it's up to you to decide what these operators will do.
+
+In this case we decided that two CashRegister objects were equal when the amount of money stored in them was equal. We could have also chosen to consider them equal only when they had the exact same number of loonies, toonies, fives, tens and twenties, or chosen to go with the default - making them equal only when they referred to the same object in memory.
+
+The choice is up to you.
+
+Jennifer Campbell • Paul Gries
+University of Toronto
+
+
+Writing Special Method __str__
+In this lecture, you will learn about the special method __str__.	As you saw in the previous lecture, special methods start and end with a double underscore __. So far, our class CashRegister has two special methods, __init__ and __eq__. It also has three regular methods, get_total, add, and remove.
+
+Method __str__
+Let us create a few CashRegister objects:
+
+>>> cr1 = CashRegister(2, 0, 0, 0, 0)
+>>> cr2 = CashRegister(0, 1, 0, 0, 0)
+>>> cr3 = CashRegister(1, 1, 0, 0, 0)
+	
+At this point, when the print function is called on CashRegister objects, the memory addresses of the objects are printed:
+
+>>> print(cr1)
+<__main__>.CashRegiter object at 0x101d7a550
+>>> print(cr2)
+<__main__>.CashRegiter object at 0x101d7ac90
+	
+The function print calls the special method __str__ in order to get a string to print. Let us now implement the __str__ method in our CashRegister class in order to get nicer output from the print function call:
+
+def __str__(self):
+    """ (CashRegister) -> str
+
+    Return a string representation of this CashRegister.
+    
+    >>> reg1 = CashRegister(1, 2, 3, 4, 5)
+    >>> reg1.__str__()
+    CashRegister: $160 ($1x1, $2x2, $5x3, $10x4, $20x5)
+    """
+
+    return 'CashRegister: $' + self.get_total() + ' ($1x' + self.loonies + \
+           ', $2x' + self.toonies + ', $5x' + self.fives + ', $10x' + \
+           self.tens + ', $20x' + self.twenties + ')'
+    
+According to the type contract, the __str__ method takes a CashRegister object and returns an str object. If we run the CashRegister module with the above __str__ method, we will get an error that says TypeError: Can't Convert 'int' object to str implicitly. The problem is that we are applying the + operator to an int and a str. That can be fixed by calling function str on the ints to get string representations of them. Here is the updated code:
+
+def __str__(self):
+    """ (CashRegister) -> str
+
+    Return a string representation of this CashRegister.
+    
+    >>> reg1 = CashRegister(1, 2, 3, 4, 5)
+    >>> reg1.__str__()
+    CashRegister: $160 ($1x1, $2x2, $5x3, $10x4, $20x5)
+    """
+
+    return 'CashRegister: $' + str(self.get_total()) + ' ($1x' + str(self.loonies) + \
+           ', $2x' + str(self.toonies) + ', $5x' + str(self.fives) + ', $10x' + \
+           str(self.tens) + ', $20x' + str(self.twenties) + ')'
+    
+If we run the CashRegister module now, we see that it runs without any problems. Now, if we print a CashRegister object, here is what we get:
+
+>>> cr1 = CashRegister(2, 0, 0, 0, 0)
+>>> cr2 = CashRegister(0, 1, 0, 0, 0)
+>>> print(cr1)
+CashRegister: $2 ($1x2, $2x0, $5x0, $10x0, $20x0)
+>>> print(cr2)
+CashRegister: $2 ($1x0, $2x1, $5x0, $10x0, $20x0
+    
+However, notice that our current __str__ method looks long and messy. We can improve this by using the str.format method call.
+
+Method str.format
+The str.format uses placeholders, which are locations in the string that we want to replace with actual values. These placeholders are curly braces with an integer between them. The placeholders correspond with the arguments passed to str.format between the parentheses (as opposed to the argument to the left of the dot). Placeholder {0} corresponds with the first argument, and {1} corresponds with the second argument, and so on. Here is the updated __str__ method that uses str.format:
+
+def __str__(self):
+    """ (CashRegister) -> str
+
+    Return a string representation of this CashRegister.
+    
+    >>> reg1 = CashRegister(1, 2, 3, 4, 5)
+    >>> reg1.__str__()
+    CashRegister: $160 ($1x1, $2x2, $5x3, $10x4, $20x5)
+    """
+
+    return 'CashRegister: ' + \
+           '${0} ($1x{1}, $2x{2}, $5x{3}, $10x{4}, $20x{5})'.format(
+               self.get_total(), self.loonies, self.toonies,
+               self.fives, self.tens, self.twenties)
+    
+In the above function, self.get_total() corresponds with {0}, self.loonies corresponds with {1}, and so on.
+
+Jennifer Campbell • Paul Gries
+University of Toronto
+
