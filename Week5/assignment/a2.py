@@ -56,6 +56,11 @@ class Rat:
         Set the rat's row and col instance variables to
         the given row and column.
         """
+        assert row >= 0, \
+           'row is negative.'
+
+        assert col >= 0, \
+           'col is negative.'
         
         self.row = row
         self.col = col
@@ -100,6 +105,9 @@ class Maze:
         self.rat_1 = rat_1
         self.rat_2 = rat_2
 
+        self.maze[rat_1.row][rat_1.col] = rat_1.symbol
+        self.maze[rat_2.row][rat_2.col] = rat_2.symbol
+
         for row in maze:
             for char in row:
                 if char == '@':
@@ -113,7 +121,7 @@ class Maze:
         given row and column of the maze
         """
 
-        return self.maze[row][col] == WALL
+        return self.get_character(row, col) == WALL
             
     def get_character(self, row, col):
         """ (Maze, int, int) => str
@@ -123,11 +131,11 @@ class Maze:
         then its character should be returned rather than HALL.
         """
 
-        if self.rat_1.row == row and self.rat_1.col == col: 
-            return self.rat_1.symbol
+        assert 0 <= row < len(self.maze), \
+           'row not in the maze.'
 
-        elif self.rat_2.row == row and self.rat_2.col == col:
-            return self.rat_2.symbol
+        assert 0 <= col < len(self.maze[0]), \
+           'col not in the maze.'
 
         return self.maze[row][col]
 
@@ -137,6 +145,16 @@ class Maze:
         Move the rat in the given direction, unless there is a wall in the way.
         Also, check for a Brussels sprout at that location and eat it if present
         """
+
+        assert vertical == UP or \
+               vertical == NO_CHANGE or \
+               vertical == DOWN, \
+           'vertical direction wrong.'
+
+        assert horizontal == UP or \
+               horizontal == NO_CHANGE or \
+               horizontal == DOWN, \
+           'horizontal direction wrong.'
         
         new_vdir = rat.row + vdir
         new_hdir = rat.row + hdir
@@ -150,6 +168,10 @@ class Maze:
             self.maze[new_vdir, new_hdir] == HALL
 
         rat.set_location(new_vdir, new_hdir)
+
+        self.maze[self.rat_1.row][self.rat_1.col] = self.rat_1.symbol
+        self.maze[self.rat_2.row][self.rat_2.col] = self.rat_2.symbol
+        
         return True     
 
     def __str__(self):
