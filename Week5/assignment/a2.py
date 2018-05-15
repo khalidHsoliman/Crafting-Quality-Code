@@ -37,6 +37,7 @@ class Rat:
     """ A rat caught in a maze. """
 
     # Write your Rat methods here.
+    
     def __init__(self, symbol, row, col):
         """ (Rat, str, int, int) => NoneType
     
@@ -82,4 +83,88 @@ class Rat:
 class Maze:
     """ A 2D maze. """
 
+    num_sprouts_left = 0
+
+    new_vdir = 0
+    new_hdir = 0
+    
     # Write your Maze methods here.
+
+    def __init__(self, maze, rat_1, rat_2):
+        """ (Maze, list of list of str, Rat, Rat) => NoneType
+
+        Initialize this maze's four instance variables
+        """
+
+        self.maze = maze
+        self.rat_1 = rat_1
+        self.rat_2 = rat_2
+
+        for row in maze:
+            for char in row:
+                if char == '@':
+                    self.num_sprouts_left +=1 
+
+
+    def is_wall(self, row, col):
+        """ (Maze, int, int) => boolean
+
+        Return True if and only if there is a wall at the
+        given row and column of the maze
+        """
+
+        return self.maze[row][col] == WALL
+            
+    def get_character(self, row, col):
+        """ (Maze, int, int) => str
+
+        Return the character in the maze at the given row and column.
+        If there is a rat at that location,
+        then its character should be returned rather than HALL.
+        """
+
+        if self.rat_1.row == row and self.rat_1.col == col: 
+            return self.rat_1.symbol
+
+        elif self.rat_2.row == row and self.rat_2.col == col:
+            return self.rat_2.symbol
+
+        return self.maze[row][col]
+
+    def move(self, rat, vdir, hdir):
+        """ (Maze, Rat, int, int) => bool
+
+        Move the rat in the given direction, unless there is a wall in the way.
+        Also, check for a Brussels sprout at that location and eat it if present
+        """
+        
+        new_vdir = rat.row + vdir
+        new_hdir = rat.row + hdir
+        
+        if self.is_wall(new_vdir, new_hdir):
+            return False
+
+        if self.get_character(new_vdir, new_hdir) == SPROUT:
+            rat.eat_sprout()
+            self.num_sprouts_left -= 1
+            self.maze[new_vdir, new_hdir] == HALL
+
+        rat.set_location(new_vdir, new_hdir)
+        return True     
+
+    def __str__(self):
+        """ (Maze) => str
+
+        . Return a string representation of the maze.  
+        """
+        str_to_print = ''
+        
+        for row in self.maze:
+            for element in row:
+                str_to_print += element
+            str_to_print += '\n'
+            
+        str_to_print += str(self.rat_1) + '\n'
+        str_to_print += str(self.rat_2) + '\n'
+
+        return  str_to_print
