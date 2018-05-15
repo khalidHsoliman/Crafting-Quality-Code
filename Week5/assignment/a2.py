@@ -82,7 +82,7 @@ class Rat:
         symbol at (row, col) ate num_sprouts_eaten sprouts.    
         """
 
-        return '{0} at ({1}, {2}) ate {3} sprouts'.format(
+        return '{0} at ({1}, {2}) ate {3} sprouts.'.format(
             self.symbol,self.row,self.col,self.num_sprouts_eaten)
     
 class Maze:
@@ -146,14 +146,14 @@ class Maze:
         Also, check for a Brussels sprout at that location and eat it if present
         """
 
-        assert vertical == UP or \
-               vertical == NO_CHANGE or \
-               vertical == DOWN, \
+        assert vdir == UP or \
+               vdir == NO_CHANGE or \
+               vdir == DOWN, \
            'vertical direction wrong.'
 
-        assert horizontal == UP or \
-               horizontal == NO_CHANGE or \
-               horizontal == DOWN, \
+        assert hdir == UP or \
+               hdir == NO_CHANGE or \
+               hdir == DOWN, \
            'horizontal direction wrong.'
         
         new_vdir = rat.row + vdir
@@ -187,6 +187,6 @@ class Maze:
             str_to_print += '\n'
             
         str_to_print += str(self.rat_1) + '\n'
-        str_to_print += str(self.rat_2) + '\n'
+        str_to_print += str(self.rat_2) 
 
         return  str_to_print
